@@ -1,14 +1,14 @@
-import React from "react";
-import { Link } from "gatsby";
-import github from "../img/github-icon.svg";
-import logo from "../img/logo.svg";
+import React from 'react';
+import { Link } from 'gatsby';
+import github from '../img/github-icon.svg';
+import logo from '../img/logo.svg';
 
 const Navbar = class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       active: false,
-      navBarActiveClass: "",
+      navBarActiveClass: '',
     };
   }
 
@@ -23,77 +23,97 @@ const Navbar = class extends React.Component {
         // set the class in state for the navbar accordingly
         this.state.active
           ? this.setState({
-              navBarActiveClass: "is-active",
+              navBarActiveClass: 'is-active',
             })
           : this.setState({
-              navBarActiveClass: "",
+              navBarActiveClass: '',
             });
-      }
+      },
     );
+  }
+
+  openNav() {
+    document.getElementById('overlayNav').style.width = '100%';
+  }
+
+  /* Close when someone clicks on the "x" symbol inside the overlay */
+  closeNav() {
+    document.getElementById('overlayNav').style.width = '0%';
   }
 
   render() {
     return (
-      <nav
-        className="navbar is-transparent"
-        role="navigation"
-        aria-label="main-navigation"
-      >
-        <div className="container">
-          <div className="navbar-brand">
-            <Link to="/" className="navbar-item" title="Logo">
-              <img src={logo} alt="Kaldi" style={{ width: "88px" }} />
-            </Link>
-            {/* Hamburger menu */}
-            <div
-              className={`navbar-burger burger ${this.state.navBarActiveClass}`}
-              data-target="navMenu"
-              role="menuitem"
-              tabIndex={0}
-              onKeyPress={() => this.toggleHamburger()}
-              onClick={() => this.toggleHamburger()}
+      <>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark" id="navbar">
+          <div>
+            <button
+              class="navbar-toggler bg-transparent"
+              type="button"
+              aria-controls="navbarNavAltMarkup"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+              onclick="openNav()"
             >
-              <span />
-              <span />
-              <span />
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-link" aria-current="page" data-scroll="#home">
+                  Home
+                </a>
+
+                <a class="nav-link" data-scroll="#about">
+                  About
+                </a>
+                <a class="nav-link" data-scroll="#tour">
+                  Tour
+                </a>
+                <a class="navbar-brand" id="DWLogo" data-scroll="#home"></a>
+                <a class="nav-link" data-scroll="#media">
+                  Media
+                </a>
+                <a class="nav-link" data-scroll="#merch">
+                  Merch
+                </a>
+                <a class="nav-link" data-scroll="#contact">
+                  Contact
+                </a>
+              </div>
             </div>
           </div>
-          <div
-            id="navMenu"
-            className={`navbar-menu ${this.state.navBarActiveClass}`}
-          >
-            <div className="navbar-start has-text-centered">
-              <Link className="navbar-item" to="/about">
-                About
-              </Link>
-              <Link className="navbar-item" to="/products">
-                Products
-              </Link>
-              <Link className="navbar-item" to="/blog">
-                Blog
-              </Link>
-              <Link className="navbar-item" to="/contact">
-                Contact
-              </Link>
-              <Link className="navbar-item" to="/contact/examples">
-                Form Examples
-              </Link>
-            </div>
-            <div className="navbar-end has-text-centered">
-              <a
-                className="navbar-item"
-                href="https://github.com/netlify-templates/gatsby-starter-netlify-cms"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span className="icon">
-                  <img src={github} alt="Github" />
-                </span>
-              </a>
-            </div>
+        </nav>
+        <div id="overlayNav" class="overlay">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">
+            &times;
+          </a>
+
+          <div class="overlay-content">
+            <a
+              class="nav-link"
+              aria-current="page"
+              onclick="closeNav()"
+              data-scroll="#home"
+            >
+              Home
+            </a>
+            <a class="nav-link" onclick="closeNav()" data-scroll="#about">
+              About
+            </a>
+            <a class="nav-link" onclick="closeNav()" data-scroll="#tour">
+              Tour
+            </a>
+            <a class="nav-link" onclick="closeNav()" data-scroll="#media">
+              Media
+            </a>
+            <a class="nav-link" onclick="closeNav()" data-scroll="#merch">
+              Merch
+            </a>
+            <a class="nav-link" onclick="closeNav()" data-scroll="#contact">
+              Contact
+            </a>
           </div>
         </div>
-      </nav>
+      </>
     );
   }
 };

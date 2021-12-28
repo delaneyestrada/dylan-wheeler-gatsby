@@ -1,106 +1,106 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Link, graphql } from "gatsby";
-import { getImage } from "gatsby-plugin-image";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link, graphql } from 'gatsby';
 
-import Layout from "../components/Layout";
-import Features from "../components/Features";
-import BlogRoll from "../components/BlogRoll";
-import FullWidthImage from "../components/FullWidthImage";
+import AboutSection from '../components/AboutSection';
+import Section from '../components/Section';
+import TourSection from '../components/TourSection';
+import MediaSection from '../components/MediaSection';
+import MerchSection from '../components/MerchSection';
+import ContactSection from '../components/ContactSection';
 
 // eslint-disable-next-line
 export const IndexPageTemplate = ({
-  image,
-  title,
-  heading,
-  subheading,
-  mainpitch,
-  description,
-  intro,
+  spotifyPlaylists,
+  aboutSection,
+  bandsintownWidget,
+  images,
+  jumbotron,
 }) => {
-  const heroImage = getImage(image) || image;
-
+  const imageJpg =
+    jumbotron.image.childImageSharp.gatsbyImageData.images.fallback;
+  const imageWebp =
+    jumbotron.image.childImageSharp.gatsbyImageData.images.sources[0];
   return (
     <div>
-      <FullWidthImage img={heroImage} title={title} subheading={subheading} />
-      <section className="section section--gradient">
-        <div className="container">
-          <div className="section">
-            <div className="columns">
-              <div className="column is-10 is-offset-1">
-                <div className="content">
-                  <div className="content">
-                    <div className="tile">
-                      <h1 className="title">{mainpitch.title}</h1>
-                    </div>
-                    <div className="tile">
-                      <h3 className="subtitle">{mainpitch.description}</h3>
-                    </div>
-                  </div>
-                  <div className="columns">
-                    <div className="column is-12">
-                      <h3 className="has-text-weight-semibold is-size-2">
-                        {heading}
-                      </h3>
-                      <p>{description}</p>
-                    </div>
-                  </div>
-                  <Features gridItems={intro.blurbs} />
-                  <div className="columns">
-                    <div className="column is-12 has-text-centered">
-                      <Link className="btn" to="/products">
-                        See all products
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="column is-12">
-                    <h3 className="has-text-weight-semibold is-size-2">
-                      Latest stories
-                    </h3>
-                    <BlogRoll />
-                    <div className="column is-12 has-text-centered">
-                      <Link className="btn" to="/blog">
-                        Read more
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div class="jumbotron" id="home">
+        <picture>
+          <source srcSet={imageWebp.srcSet} sizes={imageWebp.sizes} />
+          <img src={imageJpg.src} />
+        </picture>
+        <h1 className="header-text">{jumbotron.text}</h1>
+      </div>
+      <div className="container-xl">
+        {/* <FullWidthImage img={heroImage} title={title} subheading={subheading} /> */}
+
+        <Section title="About">
+          <AboutSection
+            sectionContent={aboutSection.text}
+            fontSize={aboutSection.fontSize}
+          />
+        </Section>
+        <Section title="Tour">
+          <TourSection bandsintownWidgetData={bandsintownWidget} />
+        </Section>
+
+        <Section title="Media">
+          <MediaSection spotifyPlaylists={spotifyPlaylists} images={images} />
+        </Section>
+
+        <Section title="Merch">
+          <MerchSection />
+        </Section>
+
+        <Section title="Contact">
+          <ContactSection />
+        </Section>
+      </div>
     </div>
   );
 };
 
 IndexPageTemplate.propTypes = {
-  image: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  title: PropTypes.string,
-  heading: PropTypes.string,
-  subheading: PropTypes.string,
-  mainpitch: PropTypes.object,
-  description: PropTypes.string,
-  intro: PropTypes.shape({
-    blurbs: PropTypes.array,
+  aboutSection: PropTypes.shape({
+    text: PropTypes.string,
+    fontSize: PropTypes.number,
   }),
+  spotifyPlaylists: PropTypes.arrayOf({
+    url: PropTypes.string,
+    height: PropTypes.number,
+  }),
+  images: PropTypes.arrayOf({
+    galleryImage: PropTypes.object,
+  }),
+  bandsintownWidget: PropTypes.shape({
+    displayStartTime: PropTypes.bool,
+    displayPastDates: PropTypes.bool,
+    displayPlayMyCity: PropTypes.bool,
+    displayLimit: PropTypes.number,
+    colorText: PropTypes.string,
+    colorLink: PropTypes.string,
+    colorLinkText: PropTypes.string,
+    colorBackground: PropTypes.string,
+  }),
+  jumbotron: PropTypes.object,
 };
 
 const IndexPage = ({ data }) => {
   const { frontmatter } = data.markdownRemark;
 
   return (
-    <Layout>
-      <IndexPageTemplate
-        image={frontmatter.image}
-        title={frontmatter.title}
-        heading={frontmatter.heading}
-        subheading={frontmatter.subheading}
-        mainpitch={frontmatter.mainpitch}
-        description={frontmatter.description}
-        intro={frontmatter.intro}
-      />
-    </Layout>
+    <IndexPageTemplate
+      title={frontmatter.title}
+      heading={frontmatter.heading}
+      aboutSection={frontmatter.aboutSection}
+      subheading={frontmatter.subheading}
+      mainpitch={frontmatter.mainpitch}
+      description={frontmatter.description}
+      intro={frontmatter.intro}
+      spotifyPlaylists={frontmatter.spotifyPlaylists}
+      bandsintownWidget={frontmatter.bandsintownWidget}
+      images={frontmatter.images}
+      jumbotron={frontmatter.jumbotron}
+    />
   );
 };
 
@@ -118,30 +118,39 @@ export const pageQuery = graphql`
   query IndexPageTemplate {
     markdownRemark(frontmatter: { templateKey: { eq: "index-page" } }) {
       frontmatter {
-        title
-        image {
-          childImageSharp {
-            gatsbyImageData(quality: 100, layout: FULL_WIDTH)
-          }
+        aboutSection {
+          text
+          fontSize
         }
-        heading
-        subheading
-        mainpitch {
-          title
-          description
-        }
-        description
-        intro {
-          blurbs {
-            image {
-              childImageSharp {
-                gatsbyImageData(width: 240, quality: 64, layout: CONSTRAINED)
-              }
+        images {
+          galleryImage {
+            childImageSharp {
+              gatsbyImageData(layout: CONSTRAINED)
             }
-            text
+            name
           }
-          heading
-          description
+        }
+        jumbotron {
+          image {
+            childImageSharp {
+              gatsbyImageData
+            }
+          }
+          text
+        }
+        spotifyPlaylists {
+          url
+          height
+        }
+        bandsintownWidget {
+          displayLimit
+          displayPastDates
+          displayPlayMyCity
+          displayStartTime
+          colorBackground
+          colorLink
+          colorLinkText
+          colorText
         }
       }
     }
